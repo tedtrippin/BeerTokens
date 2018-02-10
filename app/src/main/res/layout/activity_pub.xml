@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context="com.trippin.beertokens.PubActivity">
 
     <include layout="@layout/toolbar" />
@@ -33,50 +34,64 @@
         android:background="@drawable/button_back_blue"
         android:textColor="#fff"
         android:onClick="addToVisited"
-        android:layout_marginBottom="20dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp" />
 
-    <TableLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TableRow>
-            <TextView
-                android:text="Address "
-                android:layout_marginBottom="5dp" />
-            <TextView
-                android:id="@+id/pubAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:text="website"
-                android:layout_marginBottom="5dp" />
-            <TextView
-                android:id="@+id/pubWebsiteUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:text="phone no.  "
-                android:layout_marginBottom="5dp" />
-            <TextView
-                android:id="@+id/pubPhoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:text="Rating" />
-            <TextView
-                android:id="@+id/pubRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-    </TableLayout>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow android:layout_width="match_parent">
+                <TextView
+                    android:text="Address "
+                    android:layout_marginBottom="5dp" />
+                <TextView
+                    android:id="@+id/pubAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow android:layout_width="match_parent">
+                <TextView
+                    android:text="website"
+                    android:layout_marginBottom="5dp" />
+                <TextView
+                    android:id="@+id/pubWebsiteUrl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow android:layout_width="match_parent">
+                <TextView
+                    android:text="phone no.  "
+                    android:layout_marginBottom="5dp" />
+                <TextView
+                    android:id="@+id/pubPhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow android:layout_width="match_parent">
+                <TextView
+                    android:text="Rating" />
+                <TextView
+                    android:id="@+id/pubRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow android:layout_width="match_parent">
+                <TextView
+                    android:id="@+id/pubDescription"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -24,13 +24,6 @@ public class Top100Activity extends Activity {
         // Setup the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Top 100 pub names");
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavUtils.navigateUpFromSameTask(Top100Activity.this);
-            }
-        });
 
         // Setup the list of pub name rows
         ListView top100ListView = (ListView)findViewById(R.id.top100ListView);

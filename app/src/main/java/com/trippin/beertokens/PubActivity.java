@@ -1,15 +1,8 @@
 package com.trippin.beertokens;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,25 +13,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.PlacesOptions;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.trippin.beertokens.NearbyMapsActivity;
-import com.trippin.beertokens.R;
 import com.trippin.beertokens.managers.PubVisitManager;
 import com.trippin.beertokens.model.PubVisit;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
+
 public class PubActivity extends AppCompatActivity {
 
-    private static final int RADIUS = 20;
-    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 101;
+    private static final double IN_THE_VICINITY_LIMIT = 0.02;
 
     private String pubName;
     private String pubTopName;
@@ -83,17 +74,12 @@ public class PubActivity extends AppCompatActivity {
         // Set the toolbar as the "action bar"
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(pubName);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            NavUtils.navigateUpFromSameTask(PubActivity.this);
-            }
-        });
 
         setupPubSign();
 
         setupAddButton();
+
+        setupDescription();
     }
 
     private void getPhoto() {
@@ -131,9 +117,9 @@ public class PubActivity extends AppCompatActivity {
 
     public void addToVisited(View v) {
 
-        final PubVisitManager pubVisitManager = new PubVisitManager(this);
-        PubVisit pubVisit = new PubVisit(pubId, pubName, pubTopName, System.currentTimeMillis());
-        pubVisitManager.addPubVisist(pubVisit);
+        final PubVisitManager pubVisitManager = PubVisitManager.instance();
+        PubVisit pubVisit = new PubVisit(pubPlaceId, pubName, pubTopName, System.currentTimeMillis());
+        pubVisitManager.addPubVisit(pubVisit);
 
         Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
 
@@ -185,12 +171,26 @@ public class PubActivity extends AppCompatActivity {
         double deltaX = (pubLattitude - currentLattitude);
         double deltaY = (pubLongitude - currentLongitude);
         double radius = Math.sqrt((deltaX*deltaX) + (deltaY*deltaY));
-        boolean inVicinity = radius < 0.02;
+        boolean inVicinity = radius < IN_THE_VICINITY_LIMIT;
 
         Button addPubButton = (Button) findViewById(R.id.addPubButton);
         addPubButton.setEnabled(inVicinity);
         addPubButton.setText(inVicinity
             ? "Add " + pubTopName
             : "Too far away to add");
+    }
+
+    private void setupDescription() {
+
+        String idName = pubTopName.toLowerCase().replace(' ', '_');
+        Resources resources = getResources();
+        int id = resources.getIdentifier(idName, "raw", getApplicationContext().getPackageName());
+
+        try ( InputStream in = getResources().openRawResource(id) ) {
+            String description = new Scanner(in, "utf-8").useDelimiter("\\Z").next();
+            ((TextView) findViewById(R.id.pubDescription)).setText(description);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Couldn't open description file", Toast.LENGTH_SHORT).show();
+        }
     }
 }

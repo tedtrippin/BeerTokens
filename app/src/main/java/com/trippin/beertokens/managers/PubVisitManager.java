@@ -9,33 +9,52 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Responsible for reading and writing PubVisit data.
  */
 public class PubVisitManager {
 
+    private static PubVisitManager instance;
+
     private final static String FILE_NAME = "mypubs.json";
     private final static String SEPARATOR = "¦";
+    private final File myPubVisitsDataFile;
+    private final Map<String, PubVisit> pubVisits = new HashMap<>(); // Key = Google place ID
 
-    private final File appDir;
-
-    public PubVisitManager (Context context) {
-        appDir = context.getFilesDir();
+    public static void initialise(Context context) {
+        instance = new PubVisitManager(context);
     }
 
-    public List<PubVisit> getMyPubVisits() {
+    public static PubVisitManager instance() {
+        return instance;
+    }
 
-        List<PubVisit> pubVisits = new ArrayList<>();
+    private PubVisitManager (Context context) {
+        myPubVisitsDataFile = new File(context.getFilesDir(), FILE_NAME);
+        load();
+    }
 
-        File myPubVisitsDataFile = new File(appDir, FILE_NAME);
-        if (!myPubVisitsDataFile.exists())
-            return pubVisits;
+    public Collection<PubVisit> getMyPubVisits() {
+        return pubVisits.values();
+    }
+
+    private void load() {
+
+        if (!myPubVisitsDataFile.exists()) {
+            try {
+                myPubVisitsDataFile.createNewFile();
+            } catch (IOException ex) {
+                Log.e("BeerTokens", "Couldn't create visist file", ex);
+            }
+            return;
+        }
 
         try (
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(myPubVisitsDataFile)));
@@ -49,35 +68,37 @@ public class PubVisitManager {
                 long timeStamp = Long.parseLong(ss[3]);
 
                 PubVisit pubVisit = new PubVisit(googlePlaceId, name, topName, timeStamp);
-                pubVisits.add(pubVisit);
+                pubVisits.put(googlePlaceId, pubVisit);
             }
 
-            // Reverse so the latest is first
-            Collections.reverse(pubVisits);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            // This here whilst testing so it can recover when adding fields to PubVisit's
+            myPubVisitsDataFile.delete();
 
         } catch (Exception ex) {
-            Log.e("BeerTokens", "Couldnt read myPubs data", ex);
+            Log.e("BeerTokens", "Couldn't read myPubs data", ex);
         }
-
-        return pubVisits;
     }
 
-    public void addPubVisist(PubVisit pubVisit) {
+    public void addPubVisit(PubVisit pubVisit) {
 
-        List<PubVisit> pubVisits = new ArrayList<>();
+        // Add/overwrite PubVisit
+        pubVisits.put(pubVisit.getGooglePlaceId(), pubVisit);
 
-        File myPubVisitsDataFile = new File(appDir, FILE_NAME);
         try (
-                Writer out = new FileWriter(myPubVisitsDataFile, true);
+                Writer out = new FileWriter(myPubVisitsDataFile, false)
         ) {
-            String buf = pubVisit.getGooglePlaceId() + SEPARATOR
-                + pubVisit.getName() + SEPARATOR
-                + pubVisit.getDateAdded() + '\n';
-            out.write(buf);
+            for (PubVisit p : getMyPubVisits()) {
+                String buf = p.getGooglePlaceId() + SEPARATOR
+                        + p.getName() + SEPARATOR
+                        + p.getTopName() + SEPARATOR
+                        + p.getDateAdded() + '\n';
+                out.write(buf);
+            }
             out.flush();
 
         } catch (Exception ex) {
-            Log.e("BeerTokens", "Unable to add PubVisit to file", ex);
+            Log.e("BeerTokens", "Unable to write PubVisit's to file", ex);
         }
     }
 }

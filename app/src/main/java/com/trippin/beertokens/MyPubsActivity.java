@@ -2,10 +2,6 @@ package com.trippin.beertokens;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,18 +13,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
-import com.google.android.gms.location.places.PlacePhotoResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.trippin.beertokens.managers.PubVisitManager;
 import com.trippin.beertokens.model.PubVisit;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MyPubsActivity extends Activity {
 
@@ -42,17 +37,18 @@ public class MyPubsActivity extends Activity {
         // Setup the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Visited Pubs");
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavUtils.navigateUpFromSameTask(MyPubsActivity.this);
-            }
-        });
 
         try {
-            PubVisitManager pubVisitManager = new PubVisitManager(getApplicationContext());
-            List<PubVisit> myPubVisits = pubVisitManager.getMyPubVisits();
+            PubVisitManager pubVisitManager = PubVisitManager.instance();
+            List<PubVisit> myPubVisits = new ArrayList<>(pubVisitManager.getMyPubVisits());
+
+            // Sort, first in list = last visited
+            Collections.sort(myPubVisits, new Comparator<PubVisit>() {
+                @Override
+                public int compare(PubVisit pv1, PubVisit pv2) {
+                    return pv1.getDateAdded() > pv2.getDateAdded() ? 0 : 1;
+                }
+            });
 
             ListView myPubsListView = (ListView) findViewById(R.id.myPubsListView);
             PubVisitAdapter adapter = new PubVisitAdapter(this, myPubVisits);
@@ -67,7 +63,7 @@ public class MyPubsActivity extends Activity {
 
         private final List<PubVisit> pubVisits;
         private final LayoutInflater inflater;
-        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
         PubVisitAdapter(Context context, List<PubVisit> pubVisits) {
             this.pubVisits = pubVisits;
