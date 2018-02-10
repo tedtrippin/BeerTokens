@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.trippin.beertokens.MainActivity"
+    android:background="@drawable/pint">
+
+    <com.trippin.beertokens.views.MainMenuView
+        android:id="@+id/mainMenuView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:text="@string/h_beer_tokens" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TableRow>
+            <TextView
+                android:background="@drawable/button_back"
+                android:layout_width="200dip"
+                android:layout_height="40dip"
+                android:gravity="center"
+                android:onClick="startTop100"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/l_top_100_pub_names" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:background="@drawable/button_back"
+                android:layout_width="200dip"
+                android:layout_height="40dip"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:onClick="startFindPubs"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/l_find_pubs" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:background="@drawable/button_back"
+                android:layout_width="200dip"
+                android:layout_height="40dip"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:onClick="startMyPubs"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/l_my_pubs" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:background="@drawable/button_back"
+                android:layout_width="200dip"
+                android:layout_height="40dip"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:onClick="startPubNameHistory"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/l_pub_name_history" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

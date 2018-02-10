@@ -1,0 +1,124 @@
+<resources>
+    <string name="app_name">BeerTokens</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- view labels -->
+    <string name="h_beer_tokens">Beer Tokens</string>
+    <string name="h_top_100_pub_names">Top 100 pub names</string>
+    <string name="h_my_pubs">My Pubs</string>
+
+    <string name="l_find_pubs">Find pubs</string>
+    <string name="l_top_100_pub_names">Top 100 pub names</string>
+    <string name="l_my_pubs">My pubs</string>
+    <string name="l_pub_name_history">Pub name history</string>
+
+    <string name="google_places_key">AIzaSyA-wc7EimYKZyszOn3L7YRzUJqrGqV_9F4</string>
+
+    <string-array name="top100PubNames">
+        <item>Red Lion</item>
+        <item>Crown</item>
+        <item>Royal Oak</item>
+        <item>White Hart</item>
+        <item>Railway</item>
+        <item>Swan</item>
+        <item>Plough</item>
+        <item>White Horse</item>
+        <item>New</item>
+        <item>Ship</item>
+        <item>Kings Arms</item>
+        <item>George</item>
+        <item>Kings Head</item>
+        <item>Rose and Crown</item>
+        <item>Bell</item>
+        <item>Wheatsheaf</item>
+        <item>Queens Head</item>
+        <item>Victoria</item>
+        <item>Black Horse</item>
+        <item>Castle</item>
+        <item>Star</item>
+        <item>Cross Keys</item>
+        <item>Anchor</item>
+        <item>Prince Of Wales</item>
+        <item>White Lion</item>
+        <item>Greyhound</item>
+        <item>Station</item>
+        <item>Coach and Horses</item>
+        <item>Rising Sun</item>
+        <item>Fox and Hounds</item>
+        <item>Chequers</item>
+        <item>Bull</item>
+        <item>George and Dragon</item>
+        <item>Angel</item>
+        <item>Sun</item>
+        <item>Hare and Hounds</item>
+        <item>Bridge</item>
+        <item>Black Bull</item>
+        <item>Bulls Head</item>
+        <item>White Swan</item>
+        <item>Three Horseshoes</item>
+        <item>Golden Lion</item>
+        <item>Fox</item>
+        <item>Globe</item>
+        <item>Royal</item>
+        <item>Nags Head</item>
+        <item>Commercial</item>
+        <item>Masons Arms</item>
+        <item>Village</item>
+        <item>Bay Horse</item>
+        <item>Lamb</item>
+        <item>Blue Bell</item>
+        <item>Windmill</item>
+        <item>Cock</item>
+        <item>Britannia</item>
+        <item>Green Man</item>
+        <item>Wellington</item>
+        <item>Half Moon</item>
+        <item>Black Swan</item>
+        <item>Cricketers</item>
+        <item>Farmers Arms</item>
+        <item>Queens</item>
+        <item>Waggon and Horses</item>
+        <item>Albion</item>
+        <item>Horse and Jockey</item>
+        <item>Black Lion</item>
+        <item>Queens Arms</item>
+        <item>Dolphin</item>
+        <item>Robin Hood</item>
+        <item>Park</item>
+        <item>Grapes</item>
+        <item>Beehive</item>
+        <item>Travellers Rest</item>
+        <item>Griffin</item>
+        <item>Fountain</item>
+        <item>Three Tuns</item>
+        <item>Butchers Arms</item>
+        <item>Lord Nelson</item>
+        <item>Lion</item>
+        <item>Vine</item>
+        <item>Horse and Groom</item>
+        <item>Sportsman</item>
+        <item>Duke of York</item>
+        <item>Barley Mow</item>
+        <item>Blacksmiths Arms</item>
+        <item>Carpenters Arms</item>
+        <item>Green Dragon</item>
+        <item>Falcon</item>
+        <item>Eagle</item>
+        <item>Woolpack</item>
+        <item>Horseshoe</item>
+        <item>Bird In Hand</item>
+        <item>Shoulder Of Mutton</item>
+        <item>Talbot</item>
+        <item>Stag</item>
+        <item>Unicorn</item>
+        <item>Foresters Arms</item>
+        <item>Duke of Wellington</item>
+        <item>Market</item>
+        <item>Halfway House</item>
+    </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_maps1234">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

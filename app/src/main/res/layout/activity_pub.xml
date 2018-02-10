@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.trippin.beertokens.PubActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/pubSign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/pubPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/pubSign"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/addPubButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:textSize="20sp"
+        android:background="@drawable/button_back_blue"
+        android:textColor="#fff"
+        android:onClick="addToVisited"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow>
+            <TextView
+                android:text="Address "
+                android:layout_marginBottom="5dp" />
+            <TextView
+                android:id="@+id/pubAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="website"
+                android:layout_marginBottom="5dp" />
+            <TextView
+                android:id="@+id/pubWebsiteUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="phone no.  "
+                android:layout_marginBottom="5dp" />
+            <TextView
+                android:id="@+id/pubPhoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="Rating" />
+            <TextView
+                android:id="@+id/pubRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
