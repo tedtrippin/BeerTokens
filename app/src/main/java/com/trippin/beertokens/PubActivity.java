@@ -29,16 +29,11 @@ import java.util.Scanner;
 
 public class PubActivity extends AppCompatActivity {
 
-    private static final double IN_THE_VICINITY_LIMIT = 0.02;
+    private static final double IN_THE_VICINITY_LIMIT = 0.002;
 
     private String pubName;
     private String pubTopName;
-    private String pubId;
     private String pubPlaceId;
-    private String pubAddress;
-    private String pubPhoneNumber;
-    private String pubWebsiteUrl;
-    private float pubRating;
     private double currentLattitude;
     private double currentLongitude;
     private double pubLattitude;
@@ -53,16 +48,16 @@ public class PubActivity extends AppCompatActivity {
         // Get the pub name from the parameters passed in on the intent
         pubName = getIntent().getExtras().getString("pubName");
         pubTopName = getIntent().getExtras().getString("pubTopName");
-        pubId = getIntent().getExtras().getString("pubId");
         pubPlaceId = getIntent().getExtras().getString("pubPlaceId");
-        pubAddress = getIntent().getExtras().getString("pubAddress");
-        pubPhoneNumber = getIntent().getExtras().getString("pubPhoneNumber");
-        pubRating = getIntent().getExtras().getFloat("pubRating");
-        pubWebsiteUrl = getIntent().getExtras().getString("pubWebsiteUrl");
-        currentLattitude = getIntent().getExtras().getDouble("currentLattitude");
+        currentLattitude = getIntent().getExtras().getDouble("currentLatitude");
         currentLongitude = getIntent().getExtras().getDouble("currentLongitude");
-        pubLattitude = getIntent().getExtras().getDouble("pubLattitude");
+        pubLattitude = getIntent().getExtras().getDouble("pubLatitude");
         pubLongitude = getIntent().getExtras().getDouble("pubLongitude");
+        String pubId = getIntent().getExtras().getString("pubId");
+        String pubAddress = getIntent().getExtras().getString("pubAddress");
+        String pubPhoneNumber = getIntent().getExtras().getString("pubPhoneNumber");
+        float pubRating = getIntent().getExtras().getFloat("pubRating");
+        String pubWebsiteUrl = getIntent().getExtras().getString("pubWebsiteUrl");
 
         getPhoto();
 
@@ -111,7 +106,7 @@ public class PubActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception ex) {
-            Toast.makeText(this, "Couldnt get photo", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Couldnt get photo", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -161,7 +156,7 @@ public class PubActivity extends AppCompatActivity {
                 Drawable pubSign = resources.getDrawable(id, null);
                 pubSignView.setImageDrawable(pubSign);
             } catch (Resources.NotFoundException ex) {
-                Toast.makeText(this, "Couldn't find pub sign", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Couldn't find pub sign", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -172,6 +167,9 @@ public class PubActivity extends AppCompatActivity {
         double deltaY = (pubLongitude - currentLongitude);
         double radius = Math.sqrt((deltaX*deltaX) + (deltaY*deltaY));
         boolean inVicinity = radius < IN_THE_VICINITY_LIMIT;
+
+        // TODO: Remove
+        Toast.makeText(this, "Radius: " + radius, Toast.LENGTH_SHORT).show();
 
         Button addPubButton = (Button) findViewById(R.id.addPubButton);
         addPubButton.setEnabled(inVicinity);

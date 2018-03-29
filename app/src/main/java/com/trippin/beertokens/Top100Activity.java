@@ -13,6 +13,19 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.trippin.beertokens.managers.PubVisitManager;
+import com.trippin.beertokens.model.PubVisit;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Top100Activity extends Activity {
 
     @Override
@@ -25,10 +38,18 @@ public class Top100Activity extends Activity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Top 100 pub names");
 
+        // Get the visited pubs and map them by top100 name
+        PubVisitManager pubVisitManager = PubVisitManager.instance();
+        Collection<PubVisit> myPubVisits = new ArrayList<>(pubVisitManager.getMyPubVisits());
+        Map<String, Long> visitDatesMap = new HashMap<>();
+        for (PubVisit pv : myPubVisits) {
+            visitDatesMap.put(pv.getTopName(), pv.getDateAdded());
+        }
+
         // Setup the list of pub name rows
         ListView top100ListView = (ListView)findViewById(R.id.top100ListView);
         String[] top100PubNames = getResources().getStringArray(R.array.top100PubNames);
-        PubNameAdapter adapter = new PubNameAdapter(this, top100PubNames);
+        PubNameAdapter adapter = new PubNameAdapter(this, top100PubNames, visitDatesMap);
         top100ListView.setAdapter(adapter);
     }
 
@@ -36,10 +57,13 @@ public class Top100Activity extends Activity {
 
         private final String[] pubNames;
         private final LayoutInflater inflater;
+        private final Map<String, Long> visitDatesMap;
+        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-        PubNameAdapter(Context context, String[] pubNames) {
+        PubNameAdapter(Context context, String[] pubNames, Map<String, Long> visitDatesMap) {
             this.pubNames = pubNames;
             inflater = (LayoutInflater.from(context));
+            this. visitDatesMap = visitDatesMap;
         }
 
         @Override
@@ -66,8 +90,15 @@ public class Top100Activity extends Activity {
             number.setText(s);
 
             TextView name = (TextView)view.findViewById(R.id.name);
-            name.setText(pubNames[i]);
+            String pubName = pubNames[i];
+            name.setText(pubName);
             name.setOnClickListener(new PubClickListener(pubNames[i]));
+
+            Long dateLong = visitDatesMap.get(pubName);
+            TextView date = (TextView)view.findViewById(R.id.date);
+            date.setText(dateFormat.format(new Date(dateLong)));
+
+
             return view;
         }
     }

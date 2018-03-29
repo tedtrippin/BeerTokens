@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.trippin.beertokens.NearbyMapsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,14 +42,17 @@ public class SearchNearbyPubsTask extends AsyncTask<Void, Void, List<Place>> {
     private final int radius;
     private final GoogleMap map;
     private final Map<String, Place> markerMap;
+    private NearbyMapsActivity.PostPubSearch postPubSearch;
 
-    public SearchNearbyPubsTask (String keyword, double lat, double lng, int radius, GoogleMap map, Map<String, Place> markerMap) {
+    public SearchNearbyPubsTask (String keyword, double lat, double lng, int radius, GoogleMap map, Map<String, Place> markerMap,
+                 NearbyMapsActivity.PostPubSearch postPubSearch) {
         this.keyword = keyword;
         this.lat = lat;
         this.lng = lng;
         this.radius = radius;
         this.map = map;
         this.markerMap = markerMap;
+        this.postPubSearch = postPubSearch;
     }
 
     @Override
@@ -102,13 +106,7 @@ public class SearchNearbyPubsTask extends AsyncTask<Void, Void, List<Place>> {
     @Override
     protected void onPostExecute(List<Place> pubs) {
 
-        for (Place pub : pubs) {
-            MarkerOptions markerOptions = new MarkerOptions()
-                .position(pub.getLatLng())
-                .title(pub.getName().toString());
-            Marker marker = map.addMarker(markerOptions);
-            markerMap.put(marker.getId(), pub);
-        }
+        postPubSearch.run(pubs);
     }
 
     public class PlaceImpl implements Place, Serializable {

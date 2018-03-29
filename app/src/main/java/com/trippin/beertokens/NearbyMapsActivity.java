@@ -3,15 +3,14 @@ package com.trippin.beertokens;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
@@ -20,11 +19,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.trippin.beertokens.tasks.SearchNearbyPubsTask;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +36,7 @@ public class NearbyMapsActivity extends AppCompatActivity implements OnMapReadyC
     private static final int RADIUS = 10000;
     private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 101;
 
+    private static LatLng currentCameraPosition;
     private static LatLng currentPosition;
 
     private final Map<String, Place> markerMap = new HashMap<>();
@@ -87,39 +90,15 @@ public class NearbyMapsActivity extends AppCompatActivity implements OnMapReadyC
     private void showLocalPubs() {
 
         // Task searches for nearby pubs and display markers
-        new SearchNearbyPubsTask(pubTopName, currentPosition.latitude, currentPosition.longitude, RADIUS, map, markerMap).execute();
-
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-
-                        final SearchNearbyPubsTask.PlaceImpl pub = (SearchNearbyPubsTask.PlaceImpl) markerMap.get(marker.getId());
-
-                        Intent intent = new Intent(NearbyMapsActivity.this, PubActivity.class);
-                        intent.putExtra("pubId", pub.getId());
-                        intent.putExtra("pubPlaceId", pub.getPlaceId());
-                        intent.putExtra("pubName", pub.getName());
-                        intent.putExtra("pubTopName", pubTopName);
-                        intent.putExtra("pubAddress", pub.getAddress());
-                        intent.putExtra("pubPhoneNumber", pub.getPhoneNumber());
-                        intent.putExtra("pubRating", pub.getRating());
-                        intent.putExtra("pubWebsiteUrl", pub.getWebsiteUri());
-                        intent.putExtra("pubLattitude", pub.getLatLng().latitude);
-                        intent.putExtra("pubLongitude", pub.getLatLng().longitude);
-                        intent.putExtra("currentLattitude", currentPosition.latitude);
-                        intent.putExtra("currentLongitude", currentPosition.longitude);
-                        startActivity(intent);
-
-                        return true;
-                    }
-                });
-            }
-        });
+        new SearchNearbyPubsTask(
+            pubTopName,
+            currentCameraPosition.latitude,
+            currentCameraPosition.longitude,
+            RADIUS,
+            map,
+            markerMap,
+            new PostPubSearch()
+        ).execute();
     }
 
     private boolean moveCameraToCurrentLocation() {
@@ -142,9 +121,11 @@ public class NearbyMapsActivity extends AppCompatActivity implements OnMapReadyC
                     currentPosition = new LatLng(52.446225, -2.0351);
                 else
                     currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+
+                currentCameraPosition = currentPosition;
             }
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentPosition, 10);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentCameraPosition, 10);
             map.moveCamera(cameraUpdate);
 
             return true;
@@ -175,7 +156,14 @@ public class NearbyMapsActivity extends AppCompatActivity implements OnMapReadyC
     public void onCameraIdle() {
 
         // Get the new position from the map
-        currentPosition = map.getCameraPosition().target;
+        currentCameraPosition = map.getCameraPosition().target;
+
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(currentCameraPosition);
+        circleOptions.strokeWidth(2);
+        circleOptions.radius(RADIUS);
+        circleOptions.strokeColor(Color.BLACK);
+        map.addCircle(circleOptions);
 
         // Cancel old task
         if (mapSettledTimer != null)
@@ -188,5 +176,54 @@ public class NearbyMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void run() {
                 showLocalPubs();
             }}, 1000);
+    }
+
+    public class PostPubSearch {
+
+        public void run(List<Place> pubs) {
+
+            Toast.makeText(NearbyMapsActivity.this, "Found " + pubs.size() + " pubs", Toast.LENGTH_SHORT).show();
+
+            map.clear();
+
+            for (Place pub : pubs) {
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(pub.getLatLng())
+                        .title(pub.getName().toString());
+                Marker marker = map.addMarker(markerOptions);
+                markerMap.put(marker.getId(), pub);
+            }
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+
+                    final SearchNearbyPubsTask.PlaceImpl pub = (SearchNearbyPubsTask.PlaceImpl) markerMap.get(marker.getId());
+
+                    Intent intent = new Intent(NearbyMapsActivity.this, PubActivity.class);
+                    intent.putExtra("pubId", pub.getId());
+                    intent.putExtra("pubPlaceId", pub.getPlaceId());
+                    intent.putExtra("pubName", pub.getName());
+                    intent.putExtra("pubTopName", pubTopName);
+                    intent.putExtra("pubAddress", pub.getAddress());
+                    intent.putExtra("pubPhoneNumber", pub.getPhoneNumber());
+                    intent.putExtra("pubRating", pub.getRating());
+                    intent.putExtra("pubWebsiteUrl", pub.getWebsiteUri());
+                    intent.putExtra("pubLatitude", pub.getLatLng().latitude);
+                    intent.putExtra("pubLongitude", pub.getLatLng().longitude);
+                    intent.putExtra("currentLatitude", currentPosition.latitude);
+                    intent.putExtra("currentLongitude", currentPosition.longitude);
+                    startActivity(intent);
+
+                    return true;
+                 }
+            });
+                }
+            });
+        }
     }
 }
